@@ -232,7 +232,8 @@ class App extends Component {
 
       lines.push(
         <line key={`col-${i}`} x1={x} x2={x} y1={y1 + yStartOffset} y2={y2 - yEndOffset}
-          stroke={this.state.lineColor} strokeWidth={this.state.lineWidth} />
+          stroke={this.state.lineColor} strokeWidth={this.state.lineWidth}
+          strokeLinecap="round" />
       )
 
       if (i < this.state.columns) {
@@ -242,8 +243,9 @@ class App extends Component {
                 `M ${x} ${y1+rowWidth} A ${colWidth/2} ${rowWidth} 0 0 1 ${x+colWidth} ${y1+rowWidth}` :
                 `M ${x} ${y2-rowWidth} A ${colWidth/2} ${rowWidth} 0 0 0 ${x+colWidth} ${y2-rowWidth}`
             }
+            strokeLinecap="round"
             stroke={this.state.lineColor}
-            fill={'transparent'}
+            fill={this.state.backgroundColor}
             strokeWidth={this.state.lineWidth} />
         )
       }
@@ -269,16 +271,17 @@ class App extends Component {
 
         if (r >= 0.5) {
           fills.push(
-            <rect key={`bg-${xCorner}-${yCorner}`} x={xCorner} y={yCorner}
+            <rect id={`bg-${xCorner}-${yCorner}`} key={`bg-${xCorner}-${yCorner}`} x={xCorner} y={yCorner}
                   width={colLength} height={rowLength}
-                  fill={this.state.fillColor} stroke={this.state.fillColor} strokeWidth={1} />
+                  strokeWidth={1}
+                  stroke={this.state.fillColor}
+                  fill={this.state.fillColor} />
           )
-        } else {
-
         }
 
         const r2 = Math.random()
         const col = r >= 0.5 ? this.state.backgroundColor: this.state.fillColor
+        
         if (r2 >= 0.5) {
           let transform
 
@@ -287,13 +290,13 @@ class App extends Component {
           if (r3 <= 0.25){
             transform = `translate(${xCorner+xCorner+colLength},0) scale(-1, 1)`
           } else if (r3 <= 0.5) {
-            transform = `translate(${yCorner+yCorner+rowLength},0) scale(1, -1)`
+            transform = `translate(0,${yCorner+yCorner+rowLength}) scale(1, -1)`
           } else if (r3 <= 0.75) {
             transform = `rotate(180, ${xCorner + colLength/2}, ${yCorner+rowLength/2})`
           }
 
           fills.push(
-            <path key={`fill-${xCorner}-${yCorner}`}
+            <path id={`fill-${xCorner}-${yCorner}`} key={`fill-${xCorner}-${yCorner}`}
               d={
                 `M ${xCorner} ${yCorner} A ${colLength} ${rowLength} 0 0 0 ${xCorner + colLength} ${yCorner + rowLength}
                   L ${xCorner} ${yCorner+rowLength}`
@@ -326,9 +329,6 @@ class App extends Component {
         <div style={{ padding: this.state.padding }}> 
           <svg width={actualWidth} height={actualHeight}>
             <rect width={"100%"} height={"100%"} fill={this.state.backgroundColor} />
-            <rect width={actualWidth} height={actualHeight}
-                  stroke={'black'} fill={'transparent'} />
-
             {this.generateFills()}
             {this.generateLines()}
           </svg>
